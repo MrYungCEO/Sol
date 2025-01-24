@@ -1,0 +1,166 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 231 83% 8%;
+    --foreground: 210 40% 98%;
+    --card: 229 84% 5%;
+    --card-foreground: 210 40% 98%;
+    --popover: 229 84% 5%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 215 27% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 215 27% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 215 27% 17%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 215 27% 17%;
+    --input: 215 27% 17%;
+    --ring: 224 76% 48%;
+    --radius: 0.75rem;
+  }
+}
+
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-modal-slide-up {
+  animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.gradient-animate {
+  background-size: 200% 200%;
+  animation: gradient 15s ease infinite;
+}
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.3);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.5);
+}
+
+/* Glass effect */
+.glass-effect {
+  @apply bg-gray-900/50 backdrop-blur-xl border border-gray-800/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-[0_0_20px_rgba(59,130,246,0.1)];
+}
+
+/* Card styles */
+.card {
+  @apply glass-effect rounded-xl;
+}
+
+.card-header {
+  @apply p-6 border-b border-gray-800/50;
+}
+
+.card-body {
+  @apply p-6;
+}
+
+/* Button styles */
+.btn {
+  @apply px-4 py-2 rounded-xl transition-colors duration-300 flex items-center space-x-2;
+}
+
+.btn-primary {
+  @apply bg-blue-500 hover:bg-blue-600 text-white;
+}
+
+.btn-secondary {
+  @apply bg-gray-800/50 text-gray-400 hover:bg-gray-800 hover:text-white;
+}
+
+/* Input styles */
+.input {
+  @apply w-full bg-gray-900/50 backdrop-blur-xl border border-gray-800/50 rounded-xl py-2 px-4 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500/50;
+}
+
+/* Stats card */
+.stat-card {
+  @apply card p-6;
+}
+
+.stat-card-value {
+  @apply text-2xl font-bold text-white;
+}
+
+.stat-card-label {
+  @apply text-gray-400;
+}
+
+/* Badge styles */
+.badge {
+  @apply px-2 py-1 rounded-full text-sm font-medium;
+}
+
+.badge-blue {
+  @apply bg-blue-500/20 text-blue-400;
+}
+
+.badge-green {
+  @apply bg-green-500/20 text-green-400;
+}
+
+.badge-red {
+  @apply bg-red-500/20 text-red-400;
+}

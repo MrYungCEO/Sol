@@ -1,0 +1,15 @@
+{
+  "DefaultTestWallet": {
+    "status": "inactive",
+    "started_at": "2025-01-23T02:18:54.631896",
+    "last_updated": "2025-01-23T02:20:51.768474",
+    "transactions_count": 0,
+    "last_transaction": null,
+    "stopped_at": "2025-01-23T02:20:51.767964"
+  },
+  "j1oeQoPeuEDmjvyMwBmCWexzCQup77kbKKxV59CnYbd": {
+    "address": "j1oeQoPeuEDmjvyMwBmCWexzCQup77kbKKxV59CnYbd",
+    "status": "active",
+    "last_updated": "2025-01-23T14:29:17.591486"
+  }
+}

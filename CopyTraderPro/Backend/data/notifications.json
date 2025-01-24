@@ -1,0 +1,17 @@
+[
+  {
+    "id": "notification_1737725472142",
+    "type": "trade",
+    "title": "Trade Executed",
+    "message": "Successfully bought token AyMRWNfBBmD6bHyd6pgt4qSXZvSqXn7QgP8JRrhcpump",
+    "data": {
+      "token_address": "AyMRWNfBBmD6bHyd6pgt4qSXZvSqXn7QgP8JRrhcpump",
+      "amount_in_sol": 0.001,
+      "transaction_link": "https://solscan.io/tx/2MEmnK8ihsLiiX1onhaDrwQjGf5XjYFb6BWVEL6YnvaScoJd5zka3suVmHdFLNPeCSzHABPZd8aD1XPpj1xJemjW",
+      "token_amount": 0,
+      "trade_id": "5e34248f-6cde-486b-85eb-dd742acb22a5"
+    },
+    "timestamp": "2025-01-24T20:31:12.142072",
+    "read": false
+  }
+]

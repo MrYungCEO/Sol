@@ -1,0 +1,19 @@
+{
+  "tracked_trade_1": {
+    "id": "tracked_trade_1",
+    "date_time": "2025-01-20T19:11:02.918692",
+    "token_address": "GHichsGq8aPnqJyz6Jp1ASTK4PNLpB5KrD6XrfDjpump",
+    "buy_price": 0,
+    "close_price": null,
+    "current_price": 0,
+    "profit_percentage": 0.0,
+    "status": "active",
+    "result": "success",
+    "transaction_link": "https://solscan.io/tx/5G3FyFQTvBVjT7LBqTr4TtuFFBrqK65qdxVZbZRqCZT7ctCho3RhbtG8nogd7GvgGgFU6bZJJkssVTDLmKaPQNP8",
+    "amount_in_sol": 0.01999999999999602,
+    "token_amount": 202.98518100008368,
+    "wallet_group": null,
+    "type": "buy",
+    "sell_percentage": 0.0
+  }
+}

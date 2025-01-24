@@ -1,0 +1,186 @@
+{
+  "endpoints": [
+    {
+      "id": "trades-active",
+      "name": "Get Active Trades",
+      "path": "/api/trades/active",
+      "method": "GET",
+      "description": "Retrieve all active trades"
+    },
+    {
+      "id": "trades-history",
+      "name": "Get Trade History", 
+      "path": "/api/trades",
+      "method": "GET",
+      "description": "Get complete trade history"
+    },
+    {
+      "id": "trades-stats",
+      "name": "Get Trade Statistics",
+      "path": "/api/trades/stats",
+      "method": "GET", 
+      "description": "Get trading performance statistics"
+    },
+    {
+      "id": "trades-update",
+      "name": "Update Trade Prices",
+      "path": "/api/trades/update",
+      "method": "POST",
+      "description": "Update prices for all active trades"
+    },
+    {
+      "id": "trades-close",
+      "name": "Close Trade",
+      "path": "/api/trades/{trade_id}/close",
+      "method": "POST",
+      "description": "Close a specific trade"
+    },
+    {
+      "id": "refresh-prices",
+      "name": "Refresh Prices",
+      "path": "/api/refresh-prices",
+      "method": "POST",
+      "description": "Refresh all token prices"
+    },
+    {
+      "id": "buy",
+      "name": "Execute Buy",
+      "path": "/api/buy",
+      "method": "POST",
+      "description": "Execute a buy order"
+    },
+    {
+      "id": "sell",
+      "name": "Execute Sell",
+      "path": "/api/sell",
+      "method": "POST",
+      "description": "Execute a sell order"
+    },
+    {
+      "id": "sell-all",
+      "name": "Sell All Tokens",
+      "path": "/api/sell/all",
+      "method": "POST",
+      "description": "Sell entire token balance"
+    },
+    {
+      "id": "sell-max",
+      "name": "Sell Maximum Amount",
+      "path": "/api/sell/max",
+      "method": "POST",
+      "description": "Sell maximum possible amount"
+    },
+    {
+      "id": "sell-percentage",
+      "name": "Sell Percentage",
+      "path": "/api/sell/percentage",
+      "method": "POST",
+      "description": "Sell specific percentage of holdings"
+    },
+    {
+      "id": "wallet-balances",
+      "name": "Get Wallet Balances",
+      "path": "/api/wallet/balances",
+      "method": "GET",
+      "description": "Get all token balances"
+    },
+    {
+      "id": "wallet-transactions",
+      "name": "Get Wallet Transactions",
+      "path": "/api/wallet/transactions",
+      "method": "GET",
+      "description": "Get recent transactions"
+    },
+    {
+      "id": "token-price",
+      "name": "Get Token Price",
+      "path": "/api/get_price/{token_address}",
+      "method": "GET",
+      "description": "Get current price for a token"
+    },
+    {
+      "id": "calculate",
+      "name": "Calculate Token Amount",
+      "path": "/api/calculate",
+      "method": "POST",
+      "description": "Calculate token amount based on percentage"
+    },
+    {
+      "id": "track-wallet",
+      "name": "Track Wallet",
+      "path": "/api/track-wallet",
+      "method": "POST",
+      "description": "Start tracking a wallet"
+    },
+    {
+      "id": "stop-tracking",
+      "name": "Stop Tracking",
+      "path": "/api/stop-tracking",
+      "method": "POST",
+      "description": "Stop tracking a wallet"
+    },
+    {
+      "id": "copytrading-wallets",
+      "name": "Get Tracked Wallets",
+      "path": "/api/copytrading/wallets",
+      "method": "GET",
+      "description": "Get list of tracked wallets"
+    },
+    {
+      "id": "copytrading-add-wallet",
+      "name": "Add Tracked Wallet",
+      "path": "/api/copytrading/wallets",
+      "method": "POST",
+      "description": "Add a new wallet to track"
+    },
+    {
+      "id": "copytrading-remove-wallet",
+      "name": "Remove Tracked Wallet",
+      "path": "/api/copytrading/wallets/{address}",
+      "method": "DELETE",
+      "description": "Remove a tracked wallet"
+    },
+    {
+      "id": "jupiter-quote",
+      "name": "Get Jupiter Quote",
+      "path": "/api/jupiter/quote",
+      "method": "POST",
+      "description": "Get quote for token swap"
+    },
+    {
+      "id": "jupiter-swap",
+      "name": "Execute Jupiter Swap",
+      "path": "/api/jupiter/swap",
+      "method": "POST",
+      "description": "Execute token swap via Jupiter"
+    },
+    {
+      "id": "settings",
+      "name": "Get Settings",
+      "path": "/api/settings",
+      "method": "GET",
+      "description": "Get application settings"
+    },
+    {
+      "id": "settings-update",
+      "name": "Update Settings",
+      "path": "/api/settings",
+      "method": "POST",
+      "description": "Update application settings"
+    },
+    {
+      "id": "test-connection",
+      "name": "Test Connection",
+      "path": "/api/test-connection",
+      "method": "POST",
+      "description": "Test API and database connections"
+    },
+    {
+      "id": "health",
+      "name": "Health Check",
+      "path": "/api/health",
+      "method": "GET",
+      "description": "Check API health status"
+    }
+  ]
+}

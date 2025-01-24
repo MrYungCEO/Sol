@@ -1,0 +1,56 @@
+{
+  "useJsonFiles": true,
+  "jsonFiles": {
+    "trades": "/home/project/data/trades.json",
+    "wallets": "/home/project/data/wallets.json",
+    "settings": "/home/project/data/settings.json",
+    "tracked_trades": "/home/project/data/tracked_trades.json"
+  },
+  "database": {
+    "host": "localhost",
+    "name": "trading_db",
+    "password": "",
+    "port": "5432",
+    "user": "postgres"
+  },
+  "api": {
+    "heliusApiKey": "",
+    "jupiterApiKey": "",
+    "rpcUrl": null
+  },
+  "trading": {
+    "autoSell": true,
+    "copyAmount": 0.001,
+    "maxConcurrentTrades": 3,
+    "maxLoss": 1,
+    "maxTradeSize": 1,
+    "minProfit": 2,
+    "slippage": 0.5,
+    "stopLossEnabled": true,
+    "stopLossPercentage": 20,
+    "takeProfitEnabled": true,
+    "takeProfitPercentage": 50,
+    "tradeDelay": 500,
+    "trailingStopDistance": 10,
+    "trailingStopEnabled": false
+  },
+  "wallet": {
+    "address": "HAEcViATgps9PbxruNhVN17o6Cic3V3kKzDuwrRaMEvj",
+    "autoConnect": true,
+    "confirmTrades": true,
+    "maxGasPrice": 100,
+    "priorityFee": 1
+  },
+  "general": {
+    "logLevel": "info",
+    "maxRetries": 3,
+    "notifications": {
+      "enabled": true,
+      "errorAlerts": true,
+      "priceAlerts": true,
+      "sound": true,
+      "tradeAlerts": true
+    },
+    "updateInterval": 5000
+  }
+}

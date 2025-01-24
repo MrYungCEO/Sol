@@ -1,0 +1,400 @@
+import asyncio
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+from swap import TokenSwapper
+import os
+import sys
+from datetime import datetime
+import traceback
+import uvicorn
+import logging
+import requests
+from typing import List, Optional
+import json
+from services.openai_service import OpenAIService
+from services.price_service import PriceService
+import aiohttp
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Initialize FastAPI app
+app = FastAPI()
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://localhost:5001", "http://localhost:5173", "http://localhost:5174"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Helius API endpoint and key
+HELIUS_API_KEY = "10fc4931-f192-4403-ab41-808bf0b80a67"
+HELIUS_URL = f"https://api.helius.xyz/v0/addresses/{{address}}/transactions?api-key={HELIUS_API_KEY}"
+
+# Initialize components
+try:
+    print("Initializing components...")
+    swapper = TokenSwapper()
+    price_service = PriceService()
+    print("All components initialized successfully")
+except Exception as e:
+    print(f"Error initializing components: {str(e)}")
+    raise
+
+# Initialize services
+openai_service = OpenAIService()
+
+# Load trading rules
+with open('ui/src/pages/trading_rules.txt', 'r') as f:
+    TRADING_RULES = f.read()
+
+# In-memory storage
+conversation_history = []
+active_websockets: List[WebSocket] = []
+
+# Models
+class Message(BaseModel):
+    content: str
+
+class BuyOrder(BaseModel):
+    token_address: str
+    amount_in_sol: float
+
+class SellOrder(BaseModel):
+    token_address: str
+    amount: float
+
+class CopyTradeRequest(BaseModel):
+    trade_data: dict
+
+# WebSocket connection manager
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    active_websockets.append(websocket)
+    try:
+        while True:
+            data = await websocket.receive_text()
+            # Handle WebSocket messages here
+            await websocket.send_text(f"Message received: {data}")
+    except WebSocketDisconnect:
+        active_websockets.remove(websocket)
+    except Exception as e:
+        print(f"WebSocket error: {str(e)}")
+        if websocket in active_websockets:
+            active_websockets.remove(websocket)
+
+@app.get("/history")
+async def get_history():
+    """Get conversation history"""
+    try:
+        return JSONResponse({'history': conversation_history})
+    except Exception as e:
+        return JSONResponse({'error': str(e)}, status_code=500)
+
+@app.post("/send_message")
+async def send_message(message: Message):
+    """Handle incoming messages"""
+    try:
+        conversation_history.append({
+            'role': 'user',
+            'content': message.content,
+            'timestamp': datetime.now().isoformat()
+        })
+        
+        # Simulate response from agent
+        response_text = "Hello, how can I assist you?"
+        conversation_history.append({
+            'role': 'assistant',
+            'content': response_text,
+            'timestamp': datetime.now().isoformat()
+        })
+        
+        return JSONResponse({
+            'content': response_text,
+            'timestamp': datetime.now().isoformat()
+        })
+    except Exception as e:
+        error_msg = f"Error processing message: {str(e)}"
+        print(f"Error: {error_msg}")
+        print(f"Traceback: {traceback.format_exc()}")
+        return JSONResponse({'error': error_msg}, status_code=500)
+
+@app.get("/trades/{address}")
+async def get_trades(address: str):
+    """Get trades for an address"""
+    try:
+        response = requests.get(HELIUS_URL.format(address=address))
+        if response.status_code != 200:
+            return JSONResponse({'error': 'Failed to fetch transactions'}, status_code=400)
+            
+        transactions = response.json()
+        trades = []
+        
+        for tx in transactions:
+            trade = {
+                'signature': tx.get('signature'),
+                'timestamp': tx.get('timestamp'),
+                'type': 'buy' if 'buy' in tx.get('description', '').lower() else 'sell',
+                'tokenAddress': tx.get('tokenTransfers', [{}])[0].get('mint') if tx.get('tokenTransfers') else None,
+                'value': tx.get('tokenTransfers', [{}])[0].get('amount') if tx.get('tokenTransfers') else 0,
+                'walletAddress': address
+            }
+            trades.append(trade)
+            
+        return JSONResponse(trades)
+    except Exception as e:
+        return JSONResponse({'error': str(e)}, status_code=500)
+
+@app.get("/api/trending_pools")
+async def get_trending_pools():
+    """Get trending pools"""
+    try:
+        mock_data = {
+            "status": "success",
+            "data": {
+                "pools": [
+                    {
+                        "name": "SOL/USDC",
+                        "baseToken": {
+                            "symbol": "SOL",
+                            "price": "100.45",
+                            "address": "So11111111111111111111111111111111111111112"
+                        },
+                        "quoteToken": {
+                            "symbol": "USDC",
+                            "price": "1.00",
+                            "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+                        },
+                        "metrics": {
+                            "volume24h": "1500000",
+                            "priceChange24h": "+5.2",
+                            "liquidity": "25000000",
+                            "fdv": "30000000000"
+                        },
+                        "analysis": {
+                            "trend": "bullish",
+                            "rating": "strong_buy",
+                            "reasoning": "High volume, increasing price"
+                        },
+                        "dex": "Raydium",
+                        "address": "58oQChx4yWmvKdwLLZzBi4ChoCc2fqCUWBkwMihLYQo2"
+                    }
+                ],
+                "timestamp": datetime.now().isoformat(),
+                "network": "solana"
+            }
+        }
+        return JSONResponse(mock_data)
+    except Exception as e:
+        logging.error(f"Error in trending pools endpoint: {str(e)}")
+        return JSONResponse({
+            "status": "error",
+            "message": str(e)
+        }, status_code=500)
+
+@app.post("/buy")
+async def buy_token(order: BuyOrder):
+    """Handle buy token requests"""
+    logging.info(f"Received buy order: {order}")
+    try:
+        logging.info("Calling swapper.buy_token...")
+        result = await swapper.buy_token(order.token_address, order.amount_in_sol)
+        logging.info(f"Buy token result: {result}")
+        if result:
+            return JSONResponse({
+                "success": True,
+                "result": result
+            })
+        else:
+            error_msg = "Failed to place order - no result returned"
+            logging.error(error_msg)
+            raise ValueError(error_msg)
+    except Exception as e:
+        error_msg = f"Error in buy_token: {str(e)}"
+        logging.error(error_msg)
+        traceback.print_exc()
+        return JSONResponse({
+            "success": False,
+            "error": str(e)
+        }, status_code=500)
+
+@app.post("/sell")
+async def sell_token(order: SellOrder):
+    """Handle sell token requests"""
+    try:
+        if order.amount <= 0:
+            return JSONResponse({
+                'success': False,
+                'error': 'Invalid amount'
+            }, status_code=400)
+
+        result = await swapper.sell_token(order.token_address, order.amount)
+        
+        if result and isinstance(result, dict) and result.get('success'):
+            # Format transaction hash as Solscan URL if applicable
+            if isinstance(result.get('txid'), str):
+                tx_url = f"https://solscan.io/tx/{result['txid']}"
+                return JSONResponse({
+                    'success': True,
+                    'result': tx_url
+                })
+            else:
+                return JSONResponse({
+                    'success': False,
+                    'error': 'No transaction ID returned'
+                }, status_code=500)
+        else:
+            error_msg = result.get('error', 'Unknown error') if isinstance(result, dict) else 'Failed to sell token'
+            return JSONResponse({
+                'success': False,
+                'error': error_msg
+            }, status_code=500)
+    except Exception as e:
+        error_msg = f"Error in sell_token: {str(e)}"
+        logging.error(error_msg)
+        traceback.print_exc()
+        return JSONResponse({
+            'success': False,
+            'error': str(e)
+        }, status_code=500)
+
+@app.get("/price")
+async def get_token_price(address: str):
+    """Get token price"""
+    try:
+        price = await price_service.get_token_price(address)
+        if price is None:
+            return JSONResponse({
+                "success": False,
+                "error": "Failed to fetch token price"
+            }, status_code=500)
+            
+        return JSONResponse({
+            "success": True,
+            "price": price
+        })
+    except Exception as e:
+        logger.error(f"Error getting token price: {str(e)}")
+        traceback.print_exc()
+        return JSONResponse({
+            "success": False,
+            "error": str(e)
+        }, status_code=500)
+
+@app.post("/price")
+async def get_price(request: dict):
+    """Get token price data"""
+    try:
+        token_addresses = request.get("token_addresses", [])
+        if not token_addresses:
+            raise HTTPException(status_code=400, detail="No token addresses provided")
+
+        prices = {}
+        async with aiohttp.ClientSession() as session:
+            for address in token_addresses:
+                try:
+                    # Try Birdeye API first
+                    headers = {"x-api-key": os.getenv("BIRDEYE_API_KEY", "")}
+                    async with session.get(
+                        f"https://public-api.birdeye.so/public/price?address={address}", 
+                        headers=headers,
+                        timeout=5
+                    ) as resp:
+                        if resp.status == 200:
+                            data = await resp.json()
+                            if data.get("data", {}).get("value"):
+                                prices[address] = {
+                                    "price": abs(float(data["data"]["value"])),
+                                    "marketCap": abs(float(data["data"].get("marketCap", 0))),
+                                    "priceChange24h": float(data["data"].get("priceChange24h", 0))
+                                }
+                                continue
+
+                    # Fallback to Jupiter API
+                    async with session.get(
+                        f"https://price.jup.ag/v4/price?ids={address}",
+                        timeout=5
+                    ) as resp:
+                        if resp.status == 200:
+                            data = await resp.json()
+                            if data.get("data", {}).get(address):
+                                price_data = data["data"][address]
+                                prices[address] = {
+                                    "price": abs(float(price_data.get("price", 0))),
+                                    "marketCap": abs(float(price_data.get("marketCap", 0))),
+                                    "priceChange24h": float(price_data.get("priceChange24h", 0))
+                                }
+
+                except Exception as e:
+                    logger.error(f"Error fetching price for {address}: {str(e)}")
+                    # Return a default price object with positive values
+                    prices[address] = {
+                        "price": 0.000001,  # Small positive number instead of 0
+                        "marketCap": 1000,  # Default market cap
+                        "priceChange24h": 0
+                    }
+
+        return JSONResponse({
+            "success": True,
+            "data": prices
+        })
+
+    except Exception as e:
+        error_msg = f"Error getting prices: {str(e)}"
+        logger.error(error_msg)
+        return JSONResponse({
+            "success": False,
+            "error": error_msg
+        }, status_code=500)
+
+@app.get("/wallet/balance")
+async def get_wallet_balance():
+    """Get wallet balance"""
+    try:
+        balance = await swapper.get_wallet_balance()
+        return JSONResponse({
+            "success": True,
+            "balance": balance
+        })
+    except Exception as e:
+        traceback.print_exc()
+        return JSONResponse({
+            "success": False,
+            "error": str(e)
+        }, status_code=500)
+
+@app.post("/analyze_trade")
+async def analyze_trade(request: CopyTradeRequest):
+    """Analyze a trade using OpenAI"""
+    try:
+        analysis = await openai_service.analyze_trade(request.trade_data, TRADING_RULES)
+        return JSONResponse({
+            'success': True,
+            'analysis': analysis
+        })
+    except Exception as e:
+        error_msg = f"Error analyzing trade: {str(e)}"
+        logger.error(error_msg)
+        return JSONResponse({
+            'success': False,
+            'error': error_msg,
+            'analysis': {
+                'copy_trade': False,
+                'confidence': 'low',
+                'position_size': 0,
+                'stop_loss': 0,
+                'take_profit': [],
+                'reasoning': error_msg
+            }
+        }, status_code=500)
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=5001)
+

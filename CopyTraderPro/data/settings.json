@@ -1,0 +1,58 @@
+{
+  "useJsonFiles": true,
+  "jsonFiles": {
+    "trades": "./data/trades.json",
+    "wallets": "./data/wallets.json", 
+    "settings": "./data/settings.json",
+    "tracked_trades": "./src/data/tracked_trades.json"
+  },
+  "database": {
+    "host": "localhost",
+    "port": "5432",
+    "name": "trading_db",
+    "user": "postgres",
+    "password": ""
+  },
+  "api": {
+    "rpcUrl": "https://api.mainnet-beta.solana.com",
+    "apiEndpoint": "http://localhost:8005",
+    "wsEndpoint": "ws://localhost:8005/trades/ws",
+    "heliusApiKey": "",
+    "jupiterApiKey": ""
+  },
+  "trading": {
+    "slippage": 0.5,
+    "maxTradeSize": 1,
+    "copyAmount": 0.001,
+    "maxConcurrentTrades": 3,
+    "minProfit": 2,
+    "maxLoss": 1,
+    "tradeDelay": 500,
+    "autoSell": true,
+    "takeProfitEnabled": true,
+    "stopLossEnabled": true,
+    "takeProfitPercentage": 10,
+    "stopLossPercentage": 5,
+    "trailingStopEnabled": false,
+    "trailingStopDistance": 2
+  },
+  "wallet": {
+    "address": "j1oeQoPeuEDmjvyMwBmCWexzCQup77kbKKxV59CnYbd",
+    "autoConnect": true,
+    "confirmTrades": true,
+    "maxGasPrice": 0.000005,
+    "priorityFee": 0.000001
+  },
+  "general": {
+    "updateInterval": 30,
+    "maxRetries": 3,
+    "logLevel": "info",
+    "notifications": {
+      "enabled": true,
+      "sound": true,
+      "tradeAlerts": true,
+      "priceAlerts": true,
+      "errorAlerts": true
+    }
+  }
+}

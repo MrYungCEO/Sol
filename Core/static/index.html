@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solana Trading API Tester</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .endpoint-group {
+            margin-bottom: 2rem;
+        }
+        .response-area {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            margin-top: 1rem;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <h1 class="mb-4">Solana Trading API Tester</h1>
+
+        <!-- Token Operations -->
+        <div class="endpoint-group">
+            <h2>Token Operations</h2>
+            <div class="card">
+                <div class="card-body">
+                    <h3>Calculate Token Amount</h3>
+                    <form id="calculateForm">
+                        <div class="mb-3">
+                            <label class="form-label">Token Address</label>
+                            <input type="text" class="form-control" name="token_address" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Percentage</label>
+                            <input type="number" class="form-control" name="percentage" min="0" max="100" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Calculate</button>
+                    </form>
+                    <div class="response-area" id="calculateResponse"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Jupiter DEX -->
+        <div class="endpoint-group">
+            <h2>Jupiter DEX</h2>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h3>Get Quote</h3>
+                    <form id="quoteForm">
+                        <div class="mb-3">
+                            <label class="form-label">Input Token</label>
+                            <input type="text" class="form-control" name="input_token" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Output Token</label>
+                            <input type="text" class="form-control" name="output_token" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Amount</label>
+                            <input type="text" class="form-control" name="amount" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Slippage (%)</label>
+                            <input type="number" class="form-control" name="slippage" value="0.5" min="0" max="100" step="0.1" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Get Quote</button>
+                    </form>
+                    <div class="response-area" id="quoteResponse"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h3>Execute Swap</h3>
+                    <form id="swapForm">
+                        <div class="mb-3">
+                            <label class="form-label">Input Token</label>
+                            <input type="text" class="form-control" name="input_token" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Output Token</label>
+                            <input type="text" class="form-control" name="output_token" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Amount</label>
+                            <input type="text" class="form-control" name="amount" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Slippage (%)</label>
+                            <input type="number" class="form-control" name="slippage" value="0.5" min="0" max="100" step="0.1" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Execute Swap</button>
+                    </form>
+                    <div class="response-area" id="swapResponse"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sell Operations -->
+        <div class="endpoint-group">
+            <h2>Sell Operations</h2>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h3>Sell All</h3>
+                    <form id="sellAllForm">
+                        <div class="mb-3">
+                            <label class="form-label">Token Address</label>
+                            <input type="text" class="form-control" name="token_address" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Slippage (%)</label>
+                            <input type="number" class="form-control" name="slippage" value="0.5" min="0" max="100" step="0.1" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Sell All</button>
+                    </form>
+                    <div class="response-area" id="sellAllResponse"></div>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h3>Sell Max</h3>
+                    <form id="sellMaxForm">
+                        <div class="mb-3">
+                            <label class="form-label">Token Address</label>
+                            <input type="text" class="form-control" name="token_address" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Slippage (%)</label>
+                            <input type="number" class="form-control" name="slippage" value="0.5" min="0" max="100" step="0.1" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Sell Max</button>
+                    </form>
+                    <div class="response-area" id="sellMaxResponse"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h3>Sell Percentage</h3>
+                    <form id="sellPercentageForm">
+                        <div class="mb-3">
+                            <label class="form-label">Token Address</label>
+                            <input type="text" class="form-control" name="token_address" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Percentage</label>
+                            <input type="number" class="form-control" name="percentage" min="0" max="100" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Slippage (%)</label>
+                            <input type="number" class="form-control" name="slippage" value="0.5" min="0" max="100" step="0.1" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Sell Percentage</button>
+                    </form>
+                    <div class="response-area" id="sellPercentageResponse"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wallet Operations -->
+        <div class="endpoint-group">
+            <h2>Wallet Operations</h2>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h3>Get Balances</h3>
+                    <button id="getBalancesBtn" class="btn btn-primary">Get Balances</button>
+                    <div class="response-area" id="balancesResponse"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h3>Get Transactions</h3>
+                    <form id="getTransactionsForm">
+                        <div class="mb-3">
+                            <label class="form-label">Limit</label>
+                            <input type="number" class="form-control" name="limit" value="10" min="1" max="100" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Get Transactions</button>
+                    </form>
+                    <div class="response-area" id="transactionsResponse"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Check -->
+        <div class="endpoint-group">
+            <h2>System</h2>
+            <div class="card">
+                <div class="card-body">
+                    <h3>Health Check</h3>
+                    <button id="healthCheckBtn" class="btn btn-primary">Check Health</button>
+                    <div class="response-area" id="healthResponse"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/script.js"></script>
+</body>
+</html>
